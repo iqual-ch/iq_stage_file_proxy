@@ -1,0 +1,5 @@
+services:
+  stream_wrapper.public:
+    class: Drupal\iq_stage_file_proxy\StreamWrapper\LocalDevPublicStream
+    tags:
+      - { name: stream_wrapper, scheme: public }

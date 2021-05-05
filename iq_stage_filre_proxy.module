@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains iq_stage_file_proxy.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function iq_stage_file_proxy_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the iq_stage_file_proxy module.
+    case 'help.page.iq_stage_file_proxy':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Loads resources or generates URLs that target public:// from a defined HTTP origin') . '</p>';
+      return $output;
+
+    default:
+  }
+}
