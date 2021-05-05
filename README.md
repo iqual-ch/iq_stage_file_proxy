@@ -1,5 +1,6 @@
 # iq_stage_file_proxy
 Loads resources or generates URLs that target public:// from a defined HTTP origin
+This module will try to load from the remote instance, if the requested resource is not available locally.
 
 # Caution
 
