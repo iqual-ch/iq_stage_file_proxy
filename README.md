@@ -7,6 +7,12 @@ Use only on non-productive instances (development, staging, demo)
 
 # How-to
 
+Install via composer
+
+```
+composer require --dev iqual/iq_stage_file_proxy
+```
+
 Add the following into your settings.local.php (or settings.dev.php and similar).
 
 ```
