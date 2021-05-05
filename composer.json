@@ -1,5 +1,5 @@
 {
-    "name": "iq_stage_file_proxy",
+    "name": "iqual/iq_stage_file_proxy",
     "type": "drupal-custom-module",
     "description": "Loads resources or generates URLs that target public:// from a defined HTTP origin",
     "keywords": [],
