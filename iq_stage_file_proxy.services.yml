@@ -3,3 +3,8 @@ services:
     class: Drupal\iq_stage_file_proxy\StreamWrapper\LocalDevPublicStream
     tags:
       - { name: stream_wrapper, scheme: public }
+  iq_stage_file_proxy.kernel_request_subscriber:
+    class: Drupal\iq_stage_file_proxy\EventSubscriber\KernelRequestSubscriber
+    arguments: []
+    tags:
+      - { name: event_subscriber }
