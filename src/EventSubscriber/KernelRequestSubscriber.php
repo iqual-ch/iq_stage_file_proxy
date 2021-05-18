@@ -2,10 +2,10 @@
 
 namespace Drupal\iq_stage_file_proxy\EventSubscriber;
 
-use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class KernelRequestSubscriber.
@@ -42,10 +42,19 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
     if (strpos($path, $basePath) === 0 &&
         !realpath(DRUPAL_ROOT . $path)) {
         // Convert to a public stream wrapper URI.
-        $uri = str_replace($basePath, 'public:/', $path);
+        $uri = \str_replace($basePath, 'public:/', $path);
         // And hand it over to our LocalDevPublicStream wrapper.
-        $url = file_create_url($uri);
-        $response = new TrustedRedirectResponse($url);
+        $remote_instance_resource_url = \file_create_url($uri);
+        // Get the data.
+        $data = \file_get_contents($remote_instance_resource_url);
+        // Save the file locally as the original request path.
+        $dirs = dirname(DRUPAL_ROOT . $path);
+        is_dir($dirs) || mkdir($dirs);
+        \file_put_contents(DRUPAL_ROOT . $path, $data);
+        // Finally send the data (this one time) as a Response.
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->setContent($data);
         $event->setResponse($response);
         $event->stopPropagation();
     }
