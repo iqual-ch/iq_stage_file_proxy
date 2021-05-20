@@ -14,7 +14,7 @@ use Drupal\Core\StreamWrapper\PublicStream;
 class LocalDevPublicStream extends PublicStream {
 
   /**
-   * The diff represented as an array of rows.
+   * The host used to load public assets from.
    *
    * @var string
    */
