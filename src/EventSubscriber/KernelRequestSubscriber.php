@@ -25,7 +25,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
   /**
    * This method is called when the kernel.request is dispatched.
    *
-   * @param \Symfony\Component\EventDispatcher\Event $event
+   * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
    *   The dispatched event.
    */
   public function kernelRequest(GetResponseEvent $event) {
@@ -39,10 +39,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Redirects to a remote instance or returns an (offloaded) binary response.
-   *
-   * The offloading scenario should run once; afterwards a request for the same asset,
-   * should be handled by the webserver since it is stored there for efficiency.
+   * Generates a redirect response for a request to a missing public file asset.
    *
    * @return \Drupal\Core\Routing\TrustedRedirectResponse
    */
