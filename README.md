@@ -18,4 +18,5 @@ Add the following into your settings.local.php (or settings.dev.php and similar)
 
 ```
 $config['iq_stage_file_proxy.settings']['remote_instance'] = 'https://max-urech-drpl.docker-dev.iqual.ch';
+$config['iq_stage_file_proxy.settings']['offload'] = TRUE; // For downloading and serving from your own instance, instead of redirecting to the remote one.
 ```

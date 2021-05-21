@@ -14,17 +14,25 @@ use Drupal\Core\StreamWrapper\PublicStream;
 class LocalDevPublicStream extends PublicStream {
 
   /**
-   * The diff represented as an array of rows.
+   * The host used to load public assets from.
    *
    * @var string
    */
   protected $remoteInstance = '';
 
   /**
+   * Whether we will offload remote assets locally.
+   *
+   * @var string
+   */
+  protected $offload = FALSE;
+
+  /**
    * Creates a LocalDevPublicStream.
    */
   public function __construct() {
     $this->remoteInstance = \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance');
+    $this->offload = \Drupal::config('iq_stage_file_proxy.settings')->get('offload') ?: $this->offload;
   }
 
   /**
@@ -77,17 +85,36 @@ class LocalDevPublicStream extends PublicStream {
   }
 
   /**
-   * Generates an external URL for file URIs that are not local.
+   * Generates a URL for file URIs that are not available locally.
    *
-   * @param string $uri
-   * @return bool|string
+   * This will either generate a URL to a remote instance, or offload the asset from
+   * the remote instance locally and redirect to the now available path.
+   * The offloading scenario should run once; afterwards a request for the same asset,
+   * should be handled by the webserver since it is stored there for efficiency.
    */
   private function fetchFromRemoteInstance($uri) {
-    $path = $this->getDirectoryPath() . '/' . $this->getTarget($uri);
-    $realpath = realpath($path);
-    return $realpath ?
+    $localPath = $this->getDirectoryPath() . '/' . $this->getTarget($uri);
+    $remotePath = realpath($localPath) ?
       FALSE :
-      $this->remoteInstance . '/' . UrlHelper::encodePath($path);
+      $this->remoteInstance . '/' . UrlHelper::encodePath($localPath);
+    if ($remotePath && $this->offload) {
+      $this->offloadRemoteAsset($remotePath, $localPath);
+      return FALSE;
+    }
+    return $remotePath;
+  }
+
+  /**
+   * Fetches an asset from a remote instance and saves it locally in the same path as requested.
+   */
+  private function offloadRemoteAsset($remotePath, $localPath) {
+    // Get the data.
+    $data = \file_get_contents($remotePath);
+    // Save the file locally as the original request path.
+    $dirs = dirname(DRUPAL_ROOT . '/' . $localPath);
+    is_dir($dirs) || \Drupal::service('file_system')
+      ->mkdir($dirs, NULL, TRUE);
+    \file_put_contents(DRUPAL_ROOT . '/' . $localPath, $data);
   }
 
 }
