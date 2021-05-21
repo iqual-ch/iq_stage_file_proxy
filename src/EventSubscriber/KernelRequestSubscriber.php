@@ -43,8 +43,9 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
    *   The dispatched event.
    */
   public function kernelRequest(Event $event) {
-    if ($missingFilePath = $this->getMissingFilePath($event)) {
-      $response = $this->generateAssetResponse($missingFilePath);
+    // Was there
+    if ($missingPublicAssetFilePath = $this->getMissingPublicAssetFilePath($event)) {
+      $response = $this->generateProxyResponse($missingPublicAssetFilePath);
       $event->setResponse($response);
       $event->stopPropagation();
     }
@@ -52,11 +53,14 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Undocumented function
+   * Redirects to a remote instance or returns an (offloaded) binary response.
+   * 
+   * The offloading scenario should run once; afterwards a request for the same asset,
+   * should be handled by the webserver since it is stored there for efficiency.
    *
    * @return void
    */
-  private function generateAssetResponse($missingFilePath) {
+  private function generateProxyResponse($missingPublicAssetFilePath) {
     $missingFileAsRemoteInstanceUrl = $this->getAssetAsRemoteInstanceUrl($missingFilePath);
     $response = new TrustedRedirectResponse($missingFileAsRemoteInstanceUrl);
     if ($this->offload) {
@@ -66,7 +70,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Undocumented function
+   * Fetches an asset from a remote instance and saves it locally in the same path as requested.
    *
    * @param [type] $url
    * @return void
@@ -85,7 +89,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   * Undocumented function
+   * Uses the LocalDevPublicStream wrapper for generating URLs pointing to a remote instance.
    *
    * @param [type] $path
    * @return void
@@ -117,7 +121,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
    * If it does exist, return FALSE.
    * If it doesn't exist, return the mildly processed path.
    */
-  private function getMissingFilePath(Event $event) {
+  private function getMissingPublicAssetFilePath(Event $event) {
     $path = $event->getRequest()->getPathInfo();
     $path = $path === '/' ? $path : \rtrim($path, '/');
     return (\strpos($path, $this->getBasePath()) === 0 && !\realpath(DRUPAL_ROOT . $path)) ? $path : FALSE;
