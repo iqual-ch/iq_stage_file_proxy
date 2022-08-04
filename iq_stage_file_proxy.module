@@ -22,3 +22,14 @@ function iq_stage_file_proxy_help($route_name, RouteMatchInterface $route_match)
     default:
   }
 }
+
+
+/**
+ * Implements hook_iq_scss_compiler_post_compile().
+ *
+ * This function intends to modify and expand relative URLs found inside CSS,
+ * especially for the `background-image:` property so that file proxying works.
+ */
+function iq_stage_file_proxy_iq_scss_compiler_post_compile($css, $source) {
+  return str_replace('background-image:url(/sites/default/files/', 'background-image:url(' . \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance') . '/sites/default/files/', $css);
+}
