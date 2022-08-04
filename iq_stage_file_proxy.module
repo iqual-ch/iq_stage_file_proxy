@@ -23,13 +23,22 @@ function iq_stage_file_proxy_help($route_name, RouteMatchInterface $route_match)
   }
 }
 
-
 /**
- * Implements hook_iq_scss_compiler_post_compile().
+ * Implements hook_iq_scss_compiler_post_compile_alter().
  *
  * This function intends to modify and expand relative URLs found inside CSS,
  * especially for the `background-image:` property so that file proxying works.
  */
-function iq_stage_file_proxy_iq_scss_compiler_post_compile($css, $source) {
-  return str_replace('background-image:url(/sites/default/files/', 'background-image:url(' . \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance') . '/sites/default/files/', $css);
+function iq_stage_file_proxy_iq_scss_compiler_post_compile_alter(&$css, $context) {
+  $css = str_replace('background-image:url(/sites/default/files/', 'background-image:url(' . \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance') . '/sites/default/files/', $css);
+}
+
+/**
+ * Implements hook_pagedesigner_get_rendered_styles_alter().
+ *
+ * This function intends to modify and expand relative URLs found inside CSS,
+ * especially for the `background-image:` property so that file proxying works.
+ */
+function iq_stage_file_proxy_pagedesigner_get_rendered_styles_alter($rendered, $context) {
+  return str_replace('background-image:url(/sites/default/files/', 'background-image:url(' . \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance') . '/sites/default/files/', $rendered);
 }
