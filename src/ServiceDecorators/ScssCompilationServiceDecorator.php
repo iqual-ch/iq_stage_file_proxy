@@ -36,7 +36,12 @@ class ScssCompilationServiceDecorator extends CompilationService {
       if ($scssFile->isFile() && $scssFile->getExtension() == 'scss' && strpos($scssFile->getFilename(), '_') !== 0) {
         $sourceFile = $scssFile->getPath() . '/' . $scssFile->getFilename();
         try {
-          $css = $this->compiler->compileFile($sourceFile);
+          if (method_exists($this->compiler, 'compileFile')) {
+            $css = $this->compiler->compileFile($sourceFile);
+          }
+          else {
+            $css = $this->compiler->compileString('@import "' . $sourceFile . '";')->getCss();
+          }
           // Modify the generated css; this implies string processing.
           $context = ['source' => $sourceFile];
           \Drupal::service('module_handler')->alter('iq_scss_compiler_post_compile', $css, $context);
