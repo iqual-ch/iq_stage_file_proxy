@@ -8,11 +8,6 @@ services:
     arguments: []
     tags:
       - { name: event_subscriber }
-  iq_stage_file_proxy.iq_scss_compiler.compilation_service.decorator:
-    class: Drupal\iq_stage_file_proxy\ServiceDecorators\ScssCompilationServiceDecorator
-    decorates: iq_scss_compiler.compilation_service
-    decoration_on_invalid: ignore
-    arguments: ['@logger.factory']
   iq_stage_file_proxy.pagedesigner.service.renderer.decorator:
     class: Drupal\iq_stage_file_proxy\ServiceDecorators\PagedesignerRendererServiceDecorator
     decorates: pagedesigner.service.renderer

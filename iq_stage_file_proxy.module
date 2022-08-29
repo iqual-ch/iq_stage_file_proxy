@@ -24,12 +24,12 @@ function iq_stage_file_proxy_help($route_name, RouteMatchInterface $route_match)
 }
 
 /**
- * Implements hook_iq_scss_compiler_post_compile_alter().
+ * Implements hook_iq_scss_compiler_css_alter().
  *
  * This function intends to modify and expand relative URLs found inside CSS,
  * especially for the `background-image:` property so that file proxying works.
  */
-function iq_stage_file_proxy_iq_scss_compiler_post_compile_alter(&$css, $context) {
+function iq_stage_file_proxy_iq_scss_compiler_css_alter(&$css, $context) {
   $css = _replace_background_image_relative_with_absolute_urls($css);
 }
 

@@ -17,11 +17,6 @@ class IqStageFileProxyServiceProvider extends ServiceProviderBase {
    * Set decoration_on_invalid: ignore since setting it inside services.yml has no effect.
    */
   public function alter(ContainerBuilder $container) {
-    // For service iq_stage_file_proxy.iq_scss_compiler.compilation_service.decorator.
-    $decoratorService = $container->getDefinition('iq_stage_file_proxy.iq_scss_compiler.compilation_service.decorator');
-    if ($decoratedService = $decoratorService->getDecoratedService()) {
-      $decoratorService->setDecoratedService($decoratedService[0], $decoratedService[1], $decoratedService[2], ContainerInterface::IGNORE_ON_INVALID_REFERENCE);
-    }
     // For service iq_stage_file_proxy.pagedesigner.service.renderer.decorator.
     $decoratorService = $container->getDefinition('iq_stage_file_proxy.pagedesigner.service.renderer.decorator');
     if ($decoratedService = $decoratorService->getDecoratedService()) {
