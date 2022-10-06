@@ -4,5 +4,8 @@
     "description": "Loads resources or generates URLs that target public:// from a defined HTTP origin",
     "keywords": [],
     "homepage": "https://github.com/iqual-ch/iq_stage_file_proxy",
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "require-dev": {
+        "drupal/remote_stream_wrapper": "^2.0"
+    }
 }
