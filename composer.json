@@ -5,7 +5,7 @@
     "keywords": [],
     "homepage": "https://github.com/iqual-ch/iq_stage_file_proxy",
     "minimum-stability": "dev",
-    "require-dev": {
+    "require": {
         "drupal/remote_stream_wrapper": "^2.0"
     }
 }
