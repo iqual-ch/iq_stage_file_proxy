@@ -3,6 +3,3 @@ type: module
 description: 'Loads resources or generates URLs that target public:// from a defined HTTP origin'
 core_version_requirement: ^8.8 || ^9
 package: 'Development'
-
-dependencies:
-  - remote_stream_wrapper:remote_stream_wrapper
