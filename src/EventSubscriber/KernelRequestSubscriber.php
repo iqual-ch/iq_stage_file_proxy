@@ -2,11 +2,11 @@
 
 namespace Drupal\iq_stage_file_proxy\EventSubscriber;
 
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Contracts\EventDispatcher\Event;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Drupal\Core\Routing\TrustedRedirectResponse;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  * Class KernelRequestSubscriber.
@@ -25,10 +25,10 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
   /**
    * This method is called when the kernel.request is dispatched.
    *
-   * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
    *   The dispatched event.
    */
-  public function kernelRequest(GetResponseEvent $event) {
+  public function kernelRequest(RequestEvent $event) {
     // Is this a request for a public assets file?
     if ($missingPublicAssetFilePath = $this->getMissingPublicAssetFilePath($event)) {
       $response = $this->generateProxyResponse($missingPublicAssetFilePath);
@@ -47,7 +47,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
     // Converts a path to a public stream wrapped URI.
     $uri = $this->wrapAsPublicStream($path);
     // And hand it over to our LocalDevPublicStream wrapper.
-    $url = \file_create_url($uri);
+    $url = \Drupal::service('file_url_generator')->generateAbsoluteString($uri);
     return new TrustedRedirectResponse($url);
   }
 
