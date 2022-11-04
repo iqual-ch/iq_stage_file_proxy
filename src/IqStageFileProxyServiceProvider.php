@@ -20,7 +20,12 @@ class IqStageFileProxyServiceProvider extends ServiceProviderBase {
     // For service iq_stage_file_proxy.pagedesigner.service.renderer.decorator.
     $decoratorService = $container->getDefinition('iq_stage_file_proxy.pagedesigner.service.renderer.decorator');
     if ($decoratedService = $decoratorService->getDecoratedService()) {
-      $decoratorService->setDecoratedService($decoratedService[0], $decoratedService[1], $decoratedService[2], ContainerInterface::IGNORE_ON_INVALID_REFERENCE);
+      if (!$container->hasDefinition('pagedesigner.service.renderer')) {
+        $container->removeDefinition('iq_stage_file_proxy.pagedesigner.service.renderer.decorator');
+      }
+      else {
+        $decoratorService->setDecoratedService($decoratedService[0], $decoratedService[1], $decoratedService[2], ContainerInterface::IGNORE_ON_INVALID_REFERENCE);
+      }
     }
   }
 
