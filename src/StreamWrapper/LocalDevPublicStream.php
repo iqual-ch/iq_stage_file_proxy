@@ -94,6 +94,7 @@ class LocalDevPublicStream extends PublicStream {
    */
   private function fetchFromRemoteInstance($uri) {
     $localPath = $this->getDirectoryPath() . '/' . $this->getTarget($uri);
+    $localPath = preg_replace('/styles\/.*?\/public\//', '', $localPath);
     $remotePath = realpath($localPath) ?
       FALSE :
       $this->remoteInstance . '/' . UrlHelper::encodePath($localPath);
