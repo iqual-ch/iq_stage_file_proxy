@@ -8,8 +8,3 @@ services:
     arguments: []
     tags:
       - { name: event_subscriber }
-  iq_stage_file_proxy.pagedesigner.service.renderer.decorator:
-    class: Drupal\iq_stage_file_proxy\ServiceDecorators\PagedesignerRendererServiceDecorator
-    decorates: pagedesigner.service.renderer
-    decoration_on_invalid: ignore
-    arguments: ['@language_manager', '@pagedesigner.service.element_handler']
