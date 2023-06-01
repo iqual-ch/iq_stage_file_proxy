@@ -87,10 +87,13 @@ class LocalDevPublicStream extends PublicStream {
   /**
    * Generates a URL for file URIs that are not available locally.
    *
-   * This will either generate a URL to a remote instance, or offload the asset from
-   * the remote instance locally and redirect to the now available path.
-   * The offloading scenario should run once; afterwards a request for the same asset,
-   * should be handled by the webserver since it is stored there for efficiency.
+   * This will either generate a URL to a remote instance, or offload the
+   * asset from the remote instance locally and redirect to the now available
+   * path.
+   *
+   * The offloading scenario should run once; afterwards a request for the same
+   * asset, should be handled by the webserver since it is stored there for
+   * efficiency.
    */
   private function fetchFromRemoteInstance($uri) {
     $localPath = $this->getDirectoryPath() . '/' . $this->getTarget($uri);
@@ -105,7 +108,10 @@ class LocalDevPublicStream extends PublicStream {
   }
 
   /**
-   * Fetches an asset from a remote instance and saves it locally in the same path as requested.
+   * Offload Remote Asset.
+   *
+   * Fetches an asset from a remote instance and saves it
+   * locally in the same path as requested.
    */
   private function offloadRemoteAsset($remotePath, $localPath) {
     // Get the data.

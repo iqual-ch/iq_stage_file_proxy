@@ -1,6 +1,7 @@
 # iq_stage_file_proxy
-Loads resources or generates URLs that target public:// from a defined HTTP origin
-This module will try to load from the remote instance, if the requested resource is not available locally.
+Loads resources or generates URLs that target public:// from a defined HTTP
+origin This module will try to load from the remote instance, if the requested
+resource is not available locally.
 
 # Caution
 
@@ -14,7 +15,8 @@ Install via composer
 composer require --dev iqual/iq_stage_file_proxy
 ```
 
-Add the following into your settings.local.php (or settings.dev.php and similar).
+Add the following into your settings.local.php (or settings.dev.php and
+similar).
 
 ```
 $config['iq_stage_file_proxy.settings']['remote_instance'] = 'https://max-urech-drpl.docker-dev.iqual.ch';

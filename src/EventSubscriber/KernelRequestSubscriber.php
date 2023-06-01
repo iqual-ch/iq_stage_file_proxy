@@ -2,22 +2,41 @@
 
 namespace Drupal\iq_stage_file_proxy\EventSubscriber;
 
+use Drupal\Core\File\FileUrlGeneratorInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Drupal\Core\Routing\TrustedRedirectResponse;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Class KernelRequestSubscriber.
+ * Kernel Request Subscriber.
  */
 class KernelRequestSubscriber implements EventSubscriberInterface {
+
+  /**
+   * The file URL generator.
+   *
+   * @var \Drupal\Core\File\FileUrlGeneratorInterface
+   */
+  protected $fileUrlGenerator;
+
+  /**
+   * Constructs a KernelRequestSubscriber.
+   *
+   * @param \Drupal\Core\File\FileUrlGeneratorInterface $file_url_generator
+   *   The file URL generator.
+   */
+  public function __construct(FileUrlGeneratorInterface $file_url_generator) {
+    $this->fileUrlGenerator = $file_url_generator;
+  }
 
   /**
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    $events['kernel.request'] = ['kernelRequest', 1000];
+    $events = [];
+    $events[KernelEvents::REQUEST] = ['kernelRequest', 1000];
 
     return $events;
   }
@@ -25,29 +44,29 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
   /**
    * This method is called when the kernel.request is dispatched.
    *
-   * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
    *   The dispatched event.
    */
-  public function kernelRequest(GetResponseEvent $event) {
+  public function kernelRequest(RequestEvent $event) {
     // Is this a request for a public assets file?
     if ($missingPublicAssetFilePath = $this->getMissingPublicAssetFilePath($event)) {
       $response = $this->generateProxyResponse($missingPublicAssetFilePath);
       $event->setResponse($response);
       $event->stopPropagation();
     }
-    return;
   }
 
   /**
    * Generates a redirect response for a request to a missing public file asset.
    *
    * @return \Drupal\Core\Routing\TrustedRedirectResponse
+   *   Return TrustedRedirectResponse.
    */
   private function generateProxyResponse($path) {
     // Converts a path to a public stream wrapped URI.
     $uri = $this->wrapAsPublicStream($path);
     // And hand it over to our LocalDevPublicStream wrapper.
-    $url = \file_create_url($uri);
+    $url = $this->fileUrlGenerator->generateAbsoluteString($uri);
     return new TrustedRedirectResponse($url);
   }
 
@@ -56,12 +75,18 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
    *
    * If it does exist, return FALSE.
    * If it doesn't exist, return the mildly processed path.
+   *
+   * @param Symfony\Component\HttpKernel\Event\RequestEvent $event
+   *   The Request event.
+   *
+   * @return string|false
+   *   The return value.
    */
-  private function getMissingPublicAssetFilePath(Event $event) {
+  private function getMissingPublicAssetFilePath(RequestEvent $event) {
     $path = $event->getRequest()->getPathInfo();
     $path = $path === '/' ? $path : \rtrim($path, '/');
     // We don't serve non-public assets.
-    if (\strpos($path, $this->getBasePath()) !== 0) {
+    if (\strpos($path, (string) $this->getBasePath()) !== 0) {
       return FALSE;
     }
     // We don't serve image styles, css or js assets.
@@ -71,7 +96,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
       \strpos($stripped_path, '/js') === 0) {
       return FALSE;
     }
-    return (!\realpath(DRUPAL_ROOT . $path)) ? $path : FALSE;
+    return (!\realpath(constant('DRUPAL_ROOT') . $path)) ? $path : FALSE;
   }
 
   /**
