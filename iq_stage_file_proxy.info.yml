@@ -1,5 +1,5 @@
 name: 'Stage File Proxy'
 type: module
 description: 'Loads resources or generates URLs that target public:// from a defined HTTP origin'
-core_version_requirement: ^8.8 || ^9
+core_version_requirement: ^9.5 || ^10
 package: 'Development'
