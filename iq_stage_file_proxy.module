@@ -30,7 +30,7 @@ function iq_stage_file_proxy_help($route_name, RouteMatchInterface $route_match)
  * especially for the `background-image:` property so that file proxying works.
  */
 function iq_stage_file_proxy_iq_scss_compiler_css_alter(&$css, $context) {
-  $css = _replace_background_image_relative_with_absolute_urls($css);
+  $css = iq_stage_file_proxy__replace_background_image_relative_with_absolute_urls($css);
 }
 
 /**
@@ -40,12 +40,12 @@ function iq_stage_file_proxy_iq_scss_compiler_css_alter(&$css, $context) {
  * especially for the `background-image:` property so that file proxying works.
  */
 function iq_stage_file_proxy_pagedesigner_css_rendered_alter(string &$css, array $context) {
-  $css = _replace_background_image_relative_with_absolute_urls($css);
+  $css = iq_stage_file_proxy__replace_background_image_relative_with_absolute_urls($css);
 }
 
 /**
  * Replaces background-image:url relative with absolute URLs.
  */
-function _replace_background_image_relative_with_absolute_urls($css) {
+function iq_stage_file_proxy__replace_background_image_relative_with_absolute_urls($css) {
   return preg_replace("#(background-image: *url\(['\"]?)/sites/default/files/#", "$1" . \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance') . '/sites/default/files/', $css);
 }
