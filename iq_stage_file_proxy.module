@@ -47,5 +47,5 @@ function iq_stage_file_proxy_pagedesigner_css_rendered_alter(string &$css, array
  * Replaces background-image:url relative with absolute URLs.
  */
 function iq_stage_file_proxy__replace_background_image_relative_with_absolute_urls($css) {
-  return preg_replace("#(background-image: *url\(['\"]?)/sites/default/files/#", "$1" . \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance') . '/sites/default/files/', $css);
+  return preg_replace("#(background-image: *url\(['\"]?)/sites/default/files/#", "$1" . \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance') . '/sites/default/files/', (string) $css);
 }
