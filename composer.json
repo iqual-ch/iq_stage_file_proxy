@@ -1,11 +1,12 @@
 {
-    "name": "iqual/iq_stage_file_proxy",
-    "type": "drupal-custom-module",
-    "description": "Loads resources or generates URLs that target public:// from a defined HTTP origin",
-    "keywords": [],
-    "homepage": "https://github.com/iqual-ch/iq_stage_file_proxy",
-    "minimum-stability": "dev",
-    "require": {
-      "php": "^8.1"
-    }
+  "name": "iqual/iq_stage_file_proxy",
+  "type": "drupal-custom-module",
+  "description": "Loads resources or generates URLs that target public:// from a defined HTTP origin",
+  "keywords": [],
+  "homepage": "https://github.com/iqual-ch/iq_stage_file_proxy",
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^8.1",
+    "drupal/core": "^9.5 || ^10"
+  }
 }
