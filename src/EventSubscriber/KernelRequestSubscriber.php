@@ -3,10 +3,10 @@
 namespace Drupal\iq_stage_file_proxy\EventSubscriber;
 
 use Drupal\Core\File\FileUrlGeneratorInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\Core\Routing\TrustedRedirectResponse;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
