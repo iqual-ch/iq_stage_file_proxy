@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * @file
+ * Contains iq_stage_file_proxy.install.
+ */
+
+/**
+ * Set default config on install.
+ */
+function iq_stage_file_proxy_install() {
+  $config = \Drupal::configFactory()->getEditable('iq_stage_file_proxy.settings');
+  $config->set('remote_instance', NULL)->set('offload', FALSE)->save();
+}

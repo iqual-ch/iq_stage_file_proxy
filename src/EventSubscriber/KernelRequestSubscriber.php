@@ -3,10 +3,10 @@
 namespace Drupal\iq_stage_file_proxy\EventSubscriber;
 
 use Drupal\Core\File\FileUrlGeneratorInterface;
-use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\Core\StreamWrapper\PublicStream;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Drupal\Core\Routing\TrustedRedirectResponse;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -86,14 +86,14 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
     $path = $event->getRequest()->getPathInfo();
     $path = $path === '/' ? $path : \rtrim($path, '/');
     // We don't serve non-public assets.
-    if (\strpos($path, (string) $this->getBasePath()) !== 0) {
+    if (!str_starts_with($path, (string) $this->getBasePath())) {
       return FALSE;
     }
     // We don't serve image styles, css or js assets.
     $stripped_path = \str_replace($this->getBasePath(), '', $path);
-    if (\strpos($stripped_path, '/styles') === 0 ||
-      \strpos($stripped_path, '/css') === 0 ||
-      \strpos($stripped_path, '/js') === 0) {
+    if (str_starts_with($stripped_path, '/styles') ||
+      str_starts_with($stripped_path, '/css') ||
+      str_starts_with($stripped_path, '/js')) {
       return FALSE;
     }
     return (!\realpath(constant('DRUPAL_ROOT') . $path)) ? $path : FALSE;
@@ -103,7 +103,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
    * Converts a path to a public stream wrapped URI.
    */
   private function wrapAsPublicStream($path) {
-    return \str_replace($this->getBasePath(), 'public:/', $path);
+    return \str_replace($this->getBasePath(), 'public:/', (string) $path);
   }
 
   /**
