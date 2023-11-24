@@ -4,6 +4,7 @@ namespace Drupal\iq_stage_file_proxy\StreamWrapper;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\remote_stream_wrapper\StreamWrapper\HttpStreamWrapper;
 
 /**
  * Overrides the default Drupal public stream wrapper class for read operations.
@@ -83,6 +84,31 @@ class LocalDevPublicStream extends PublicStream {
 
     return (bool) $this->handle;
   }
+
+  /**
+   * {@inheritdoc}
+   * 
+   * We are using drupal/remote_stream_wrapper's url_stat().
+   */
+  public function url_stat($uri, $flags) {
+    $this->uri = $uri;
+
+    // Check if we need to stat the file from the remote instance,
+    // i.e. if the file is not found on our local filesystem.
+    if (($remote_path = $this->fetchFromRemoteInstance($this->uri)) && !$this->offload) {
+      return (new HttpStreamWrapper())->url_stat($remote_path, $flags);
+    }
+    $path = $this->getLocalPath();
+
+    // Suppress warnings if requested or if the file or directory does not
+    // exist. This is consistent with PHP's plain filesystem stream wrapper.
+    if ($flags & STREAM_URL_STAT_QUIET || !file_exists($path)) {
+      return @stat($path);
+    }
+    else {
+      return stat($path);
+    }
+  }  
 
   /**
    * Generates a URL for file URIs that are not available locally.
