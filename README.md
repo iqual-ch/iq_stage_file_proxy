@@ -21,7 +21,7 @@ similar).
 
 ```
 $config['iq_stage_file_proxy.settings']['remote_instance']
-    = 'https://max-urech-drpl.docker-dev.iqual.ch';
+    = 'https://mylivedomain.ch';
 
 // For downloading and serving from your own instance,
 // instead of redirecting to the remote one.
