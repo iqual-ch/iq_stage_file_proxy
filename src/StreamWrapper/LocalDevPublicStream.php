@@ -28,25 +28,36 @@ class LocalDevPublicStream extends PublicStream {
   protected $offload = FALSE;
 
   /**
+   * The file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * Creates a LocalDevPublicStream.
    */
   public function __construct() {
+    // @codingStandardsIgnoreStart
+    // Stream wrappers are instantiated by PHP's stream system, not Drupal's DI container.
     $this->remoteInstance = \Drupal::config('iq_stage_file_proxy.settings')->get('remote_instance');
     $this->offload = \Drupal::config('iq_stage_file_proxy.settings')->get('offload') ?: $this->offload;
+    $this->fileSystem = \Drupal::service('file_system');
+    // @codingStandardsIgnoreEnd
   }
 
   /**
    * {@inheritdoc}
    */
   public function getName() {
-    return t('Public files from a production origin');
+    return $this->t('Public files from a production origin');
   }
 
   /**
    * {@inheritdoc}
    */
   public function getDescription() {
-    return t('Public local files served by the production webserver.');
+    return $this->t('Public local files served by the production webserver.');
   }
 
   /**
@@ -64,6 +75,7 @@ class LocalDevPublicStream extends PublicStream {
   /**
    * {@inheritdoc}
    */
+  // phpcs:ignore
   public function stream_open($uri, $mode, $options, &$opened_path) {
     // If we are not in reading mode, delegate to parent stream wrapper.
     if (!in_array($mode, ['r', 'rb'])) {
@@ -116,11 +128,9 @@ class LocalDevPublicStream extends PublicStream {
   private function offloadRemoteAsset($remotePath, $localPath) {
     // Get the data.
     $data = \file_get_contents($remotePath);
-    // Save the file locally as the original request path.
-    $dirs = dirname(DRUPAL_ROOT . '/' . $localPath);
-    is_dir($dirs) || \Drupal::service('file_system')
-      ->mkdir($dirs, NULL, TRUE);
-    \file_put_contents(DRUPAL_ROOT . '/' . $localPath, $data);
+    $directory = dirname($localPath);
+    $this->fileSystem->prepareDirectory($directory, $this->fileSystem::CREATE_DIRECTORY | $this->fileSystem::MODIFY_PERMISSIONS);
+    \file_put_contents($localPath, $data);
   }
 
 }
