@@ -1,0 +1,11 @@
+iq_stage_file_proxy.settings:
+  type: config_object
+  label: 'IQ Stage File Proxy settings'
+  mapping:
+    remote_instance:
+      type: string
+      label: 'Remote instance'
+      nullable: true
+    offload:
+      type: boolean
+      label: 'Offload'
