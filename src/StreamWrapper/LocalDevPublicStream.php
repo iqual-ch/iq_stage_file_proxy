@@ -4,6 +4,7 @@ namespace Drupal\iq_stage_file_proxy\StreamWrapper;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * Overrides the default Drupal public stream wrapper class for read operations.
@@ -12,6 +13,8 @@ use Drupal\Core\StreamWrapper\PublicStream;
  * usually the production instance.
  */
 class LocalDevPublicStream extends PublicStream {
+
+  use StringTranslationTrait;
 
   /**
    * The host used to load public assets from.
