@@ -5,6 +5,7 @@ namespace Drupal\iq_stage_file_proxy\EventSubscriber;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Drupal\Core\StreamWrapper\PublicStream;
+use Drupal\iq_stage_file_proxy\StreamWrapper\LocalDevPublicStream;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -89,11 +90,9 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
     if (!str_starts_with($path, (string) $this->getBasePath())) {
       return FALSE;
     }
-    // We don't serve image styles, css or js assets.
+    // We don't serve locally generated assets (image styles, css, js, php).
     $stripped_path = \str_replace($this->getBasePath(), '', $path);
-    if (str_starts_with($stripped_path, '/styles') ||
-      str_starts_with($stripped_path, '/css') ||
-      str_starts_with($stripped_path, '/js')) {
+    if (LocalDevPublicStream::isLocalOnlyTarget($stripped_path)) {
       return FALSE;
     }
     return (!\realpath(constant('DRUPAL_ROOT') . $path)) ? $path : FALSE;
