@@ -100,8 +100,8 @@ class KernelRequestSubscriberTest extends KernelTestBase {
   public static function providerMissingFileRedirect(): array {
     return [
       'plain file name' => ['logos/plain.png', 'logos/plain.png'],
-      'encoded @' => ['logos/sca_col%402x.png', 'logos/sca_col%402x.png'],
-      'unencoded @' => ['logos/sca_col@2x.png', 'logos/sca_col%402x.png'],
+      'encoded @' => ['logos/logo%402x.png', 'logos/logo%402x.png'],
+      'unencoded @' => ['logos/logo@2x.png', 'logos/logo%402x.png'],
       'umlaut and space' => ['bilder/K%C3%A4se%20gross.jpg', 'bilder/K%C3%A4se%20gross.jpg'],
       'literal +' => ['bilder/a+b.png', 'bilder/a%2Bb.png'],
       'encoded +' => ['bilder/a%2Bb.png', 'bilder/a%2Bb.png'],
