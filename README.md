@@ -45,7 +45,10 @@ exist locally:
   error, timeout or missing `remote_instance` the file is reported as missing,
   exactly like a plain local stream.
 - **HTTP requests** to `/sites/default/files/...` for missing files are
-  redirected to the remote instance by a kernel request subscriber.
+  redirected to the remote instance by a kernel request subscriber. The
+  request path is decoded first, so file names with `@`, spaces or umlauts are
+  looked up locally under their real name and encoded only once in the
+  redirect. Paths containing `..` segments are never redirected.
 
 Files below `public://styles`, `public://css`, `public://js` and `public://php`
 are never proxied or looked up remotely: they are generated locally by Drupal.
