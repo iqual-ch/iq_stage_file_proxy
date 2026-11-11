@@ -75,7 +75,7 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
    * Checks if a file exists locally using realpath().
    *
    * If it does exist, return FALSE.
-   * If it doesn't exist, return the mildly processed path.
+   * If it doesn't exist, return the decoded and mildly processed path.
    *
    * @param Symfony\Component\HttpKernel\Event\RequestEvent $event
    *   The Request event.
@@ -84,8 +84,15 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
    *   The return value.
    */
   private function getMissingPublicAssetFilePath(RequestEvent $event) {
-    $path = $event->getRequest()->getPathInfo();
+    // The path info is still URL-encoded (e.g. "%40" for "@"). Decode it so
+    // that the local lookup uses the real file name and the redirect URL is
+    // not encoded twice ("%2540").
+    $path = \rawurldecode($event->getRequest()->getPathInfo());
     $path = $path === '/' ? $path : \rtrim($path, '/');
+    // Never resolve paths outside of the public files directory.
+    if (\preg_match('#(^|/)\.\.(/|$)#', $path)) {
+      return FALSE;
+    }
     // We don't serve non-public assets.
     if (!str_starts_with($path, (string) $this->getBasePath())) {
       return FALSE;
