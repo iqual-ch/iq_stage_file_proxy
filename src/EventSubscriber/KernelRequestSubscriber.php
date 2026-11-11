@@ -88,6 +88,9 @@ class KernelRequestSubscriber implements EventSubscriberInterface {
     // that the local lookup uses the real file name and the redirect URL is
     // not encoded twice ("%2540").
     $path = \rawurldecode($event->getRequest()->getPathInfo());
+    if (\str_contains($path, "\0")) {
+      return FALSE;
+    }
     $path = $path === '/' ? $path : \rtrim($path, '/');
     // Never resolve paths outside of the public files directory.
     if (\preg_match('#(^|/)\.\.(/|$)#', $path)) {
